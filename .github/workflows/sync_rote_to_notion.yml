@@ -4,6 +4,7 @@ on:
   schedule:
     # 每天运行一次
     - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   rote_to_notion:
@@ -29,4 +30,3 @@ jobs:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           ROTE_API_KEY: ${{ secrets.ROTE_API_KEY }}
-
