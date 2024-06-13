@@ -21,6 +21,10 @@ else:
     print("Failed to retrieve content from rote.ink:", response.status_code)
     exit(1)
 
+# 假设rote_content是一个包含多个条目的列表
+# 这里需要根据实际API返回的格式进行调整
+# 假设API返回的是一个单条目（字典）
+
 notion_api_url = "https://api.notion.com/v1/pages"
 headers = {
     "Authorization": f"Bearer {notion_api_key}",
@@ -29,35 +33,26 @@ headers = {
 }
 
 # 数据结构根据Notion数据库的设置进行调整
+# 假设Notion数据库中有 "Content" 和 "Tags" 两个属性
+
 data = {
     "parent": { "database_id": notion_database_id },
     "properties": {
-        "title": {
-            "title": [
+        "Content": {
+            "rich_text": [
                 {
                     "text": {
-                        "content": rote_content.get("title", "No Title")
+                        "content": rote_content.get("content", "No Content")
                     }
                 }
             ]
+        },
+        "Tags": {
+            "multi_select": [
+                {"name": tag} for tag in rote_content.get("tag", [])
+            ]
         }
-    },
-    "children": [
-        {
-            "object": "block",
-            "type": "paragraph",
-            "paragraph": {
-                "text": [
-                    {
-                        "type": "text",
-                        "text": {
-                            "content": rote_content.get("content", "No Content")
-                        }
-                    }
-                ]
-            }
-        }
-    ]
+    }
 }
 
 response = requests.post(notion_api_url, headers=headers, data=json.dumps(data))
